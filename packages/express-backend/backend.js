@@ -100,8 +100,8 @@ app.get("/users", (req, res) => {
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   userToAdd["id"] = idGen();
-  if (Object.values(req.body).some(value=> value === "")){
-    res.status(204).send();
+  if (Object.values(req.body).some(value=> value === ""|| value === null || value === undefined)){
+    res.status(400).send();
   }
   else{
     addUser(userToAdd);

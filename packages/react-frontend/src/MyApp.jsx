@@ -62,8 +62,6 @@ function MyApp() {
         }
       })
       .then((json) => {
-        console.log("got here");
-        console.log(json);
           setCharacters([...characters, json]);
       })
       .catch((error) => {
