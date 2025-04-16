@@ -60,6 +60,9 @@ function MyApp() {
         if(res.status == 201){
           return res.json();
         }
+        else{
+          throw new Error(`Status: ${res.status}`);
+        }
       })
       .then((json) => {
           setCharacters([...characters, json]);
