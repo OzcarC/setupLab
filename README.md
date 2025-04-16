@@ -1,1 +1,1 @@
-this is my first react project
+Use npm start in monorepo directory to start both backend and front
