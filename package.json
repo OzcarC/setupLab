@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run dev --workspace=react-frontend"
+    "fdev": "npm run dev --workspace=react-frontend",
+    "bdev": "npm run dev --workspace=express-backend"
   },
   "workspaces": [
     "packages/*"
