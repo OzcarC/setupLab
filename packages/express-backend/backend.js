@@ -51,7 +51,12 @@ const addUser = (user) => {
 
 const idGen = () => {
   return Math.random().toString(36).substring(5);
-}
+};
+
+const removeUserById = (id) =>{
+  const rmIndex = users["users_list"].findIndex((user)=>user["id"] === id);
+  users["users_list"].splice(rmIndex,1);
+};
 
 app.use(cors());
 app.use(express.json());
@@ -70,6 +75,17 @@ app.get("/users/:id", (req, res) => {
   }
 });
 
+app.delete("/users/:id",(req,res)=>{
+  const id = req.params["id"];
+  let result = findUserById(id);
+  if (result === undefined) {
+    res.status(404).send("Resource not found.");
+  } else {
+    removeUserById(id);
+    res.status(204).send();
+  }
+});
+
 app.get("/users", (req, res) => {
   const name = req.query.name;
   if (name != undefined) {
@@ -82,16 +98,17 @@ app.get("/users", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
+  const userToAdd = req.body;
+  userToAdd["id"] = idGen();
   if (Object.values(req.body).some(value=> value === "")){
     res.status(204).send();
   }
   else{
-    const userToAdd = req.body;
-    userToAdd["id"] = idGen();
     addUser(userToAdd);
     res.status(201).send(userToAdd);
   }
 });
+
 
 app.listen(port, () => {
   console.log(
