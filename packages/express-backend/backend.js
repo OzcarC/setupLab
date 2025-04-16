@@ -49,6 +49,10 @@ const addUser = (user) => {
   return user;
 };
 
+const idGen = () => {
+  return Math.random().toString(36).substring(5);
+}
+
 app.use(cors());
 app.use(express.json());
 
@@ -78,9 +82,15 @@ app.get("/users", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
-  const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  if (Object.values(req.body).some(value=> value === "")){
+    res.status(204).send();
+  }
+  else{
+    const userToAdd = req.body;
+    userToAdd["id"] = idGen();
+    addUser(userToAdd);
+    res.status(201).send(userToAdd);
+  }
 });
 
 app.listen(port, () => {
