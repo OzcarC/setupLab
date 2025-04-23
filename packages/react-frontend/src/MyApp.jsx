@@ -31,7 +31,7 @@ function MyApp() {
   }
 
   function deleteUser(id){
-    const promise = fetch(`Http://localhost:8000/users/${id}`,{
+    const promise = fetch(`http://localhost:8000/users/${id}`,{
       method: "DELETE",
     });
     return promise;
@@ -39,7 +39,7 @@ function MyApp() {
 
 
   function removeOneCharacter(index) {
-    deleteUser(characters[index]["id"])
+    deleteUser(characters[index]["_id"])
     .then((res)=>{
       if(res.status == 204){
         const updated = characters.filter((character, i) => {
