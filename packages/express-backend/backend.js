@@ -35,13 +35,19 @@ app.get("/users/:id", (req, res) => {
 
 app.delete("/users/:id",(req,res)=>{
   const id = req.params["id"];
-  let result = findUserById(id);
-  if (result === undefined) {
-    res.status(404).send("Resource not found.");
-  } else {
-    removeUserById(id);
-    res.status(204).send();
-  }
+  userServices.deleteUserById(id)
+  .then((deletedUser)=>{
+    if(!deletedUser){
+      res.status(404).send(`No user with id ${id} exists`);
+    }
+    else{
+      res.status(204).send();
+    }
+  })
+  .catch(()=>{
+    console.log("Error deleting user");
+    res.status(500).send("Internal Server Error");
+  });
 });
 
 app.get("/users", (req, res) => {
