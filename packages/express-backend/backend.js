@@ -6,57 +6,9 @@ import userServices from "./user-services.js";
 const app = express();
 const port = 8000;
 
-// const users = {
-//     users_list: [
-//       {
-//         id: "xyz789",
-//         name: "Charlie",
-//         job: "Janitor"
-//       },
-//       {
-//         id: "abc123",
-//         name: "Mac",
-//         job: "Bouncer"
-//       },
-//       {
-//         id: "ppp222",
-//         name: "Mac",
-//         job: "Professor"
-//       },
-//       {
-//         id: "yat999",
-//         name: "Dee",
-//         job: "Aspring actress"
-//       },
-//       {
-//         id: "zap555",
-//         name: "Dennis",
-//         job: "Bartender"
-//       }
-//     ]
-//   };
-
-// const findUserByName = (name) => {
-//   return users["users_list"].filter(
-//     (user) => user["name"] === name
-//   );
-// };
-
-const findUserById = (id) =>
-  users["users_list"].find((user) => user["id"] === id);
-
-const addUser = (user) => {
-  users["users_list"].push(user);
-  return user;
-};
 
 const idGen = () => {
   return Math.random().toString(36).substring(5);
-};
-
-const removeUserById = (id) =>{
-  const rmIndex = users["users_list"].findIndex((user)=>user["id"] === id);
-  users["users_list"].splice(rmIndex,1);
 };
 
 app.use(cors());
@@ -67,13 +19,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users/:id", (req, res) => {
-  const id = req.params["_id"]; //or req.params.id
-  let result = findUserById(id);
-  if (result === undefined) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
-  }
+  
+  const id = req.params["id"];
+  userServices.findUserById(id)
+  .then((result)=>{
+    if (!result){
+      res.status(404).send("Resource not found.");
+    }
+    else{
+      res.send(result);
+    }
+  })
+  .catch(()=>console.log(`An error occured when searching for user with ID: ${id}`));
 });
 
 app.delete("/users/:id",(req,res)=>{
@@ -102,11 +59,15 @@ app.post("/users", (req, res) => {
   const userToAdd = req.body;
   userToAdd["id"] = idGen();
   if (Object.values(req.body).some(value=> value === ""|| value === null || value === undefined)){
-    res.status(400).send();
+    res.status(400).send("Some field was empty, all fields are required");
   }
   else{
-    addUser(userToAdd);
-    res.status(201).send(userToAdd);
+    userServices.addUser(userToAdd)
+    .then((savedUser)=>res.status(201).send(savedUser))
+    .catch(()=>{
+      console.log("An error occured when adding user");
+      res.status(500).send("Internal Server Error");
+    });
   }
 });
 
